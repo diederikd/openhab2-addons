@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -42,19 +43,26 @@ import org.slf4j.LoggerFactory;
  * @since 2.1.0
  */
 public class DSMRBridgeHandler extends BaseBridgeHandler implements DSMRDeviceStateListener {
-    // logger
     private final Logger logger = LoggerFactory.getLogger(DSMRBridgeHandler.class);
 
-    // DSMRDevice that belongs to this DSMRBridgeHandler
-    private DSMRDevice dsmrDevice = null;
+    /**
+     * DSMRDevice that belongs to this DSMRBridgeHandler
+     */
+    private DSMRDevice dsmrDevice;
 
-    // The Discovery service for this bridge
+    /**
+     * The Discovery service for this bridge
+     */
     private DSMRMeterDiscoveryListener discoveryService;
 
-    // The available meters for this bridge
-    private final List<DSMRMeter> availableMeters = new ArrayList<DSMRMeter>();
+    /**
+     * The available meters for this bridge
+     */
+    private final List<DSMRMeter> availableMeters = new ArrayList<>();
 
-    // Watchdog
+    /**
+     * Watchdog for checking if the DSMR Device is alive
+     */
     private ScheduledFuture<?> watchdog;
 
     /**
@@ -91,7 +99,7 @@ public class DSMRBridgeHandler extends BaseBridgeHandler implements DSMRDeviceSt
         DSMRDeviceConfiguration deviceConfig = config.as(DSMRDeviceConfiguration.class);
 
         logger.debug("Using configuration {}", deviceConfig);
-        if (deviceConfig == null || deviceConfig.serialPort == null || deviceConfig.serialPort.length() == 0) {
+        if (deviceConfig == null || StringUtils.isBlank(deviceConfig.serialPort)) {
             logger.warn("portName is not configured, not starting device");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_PENDING, "Serial Port name is not set");
         } else {
@@ -127,19 +135,11 @@ public class DSMRBridgeHandler extends BaseBridgeHandler implements DSMRDeviceSt
             dsmrDevice.stopDevice();
             dsmrDevice = null;
         }
-
     }
 
     @Override
     public void handleRemoval() {
-        if (watchdog != null && !watchdog.isCancelled()) {
-            watchdog.cancel(true);
-            watchdog = null;
-        }
-        if (dsmrDevice != null) {
-            dsmrDevice.stopDevice();
-            dsmrDevice = null;
-        }
+        dispose();
         updateStatus(ThingStatus.REMOVED);
     }
 

@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.dsmr.internal.meter;
 
+import java.util.Objects;
+
 /**
  * The DSMRMeterDescriptor describes a meter.
  *
@@ -20,10 +22,14 @@ package org.openhab.binding.dsmr.internal.meter;
  * @since 2.1.0
  */
 public class DSMRMeterDescriptor {
-    // Meter type
+    /**
+     * Meter type
+     */
     private final DSMRMeterType meterType;
 
-    // M-Bus channel
+    /**
+     * M-Bus channel
+     */
     private final int channel;
 
     /**
@@ -73,5 +79,10 @@ public class DSMRMeterDescriptor {
     @Override
     public String toString() {
         return "Meter type: " + meterType + ", channel: " + channel;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(meterType, channel);
     }
 }

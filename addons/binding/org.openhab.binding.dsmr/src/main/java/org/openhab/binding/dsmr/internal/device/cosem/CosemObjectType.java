@@ -178,11 +178,19 @@ public enum CosemObjectType {
     /* Generic Meter (DSMR v3 only) */
     GENMETER_VALUE_V3(new OBISIdentifier(0, null, 24, 3, 0, null), new CosemValueDescriptor(CosemFloat.class, ""));
 
-    /** OBIS reduced identifier */
+    /**
+     * OBIS reduced identifier
+     */
     public final OBISIdentifier obisId;
 
-    /** COSEM value descriptors */
+    /**
+     * COSEM value descriptors
+     */
     private final List<CosemValueDescriptor> descriptors;
+
+    /**
+     * COSEM repeating value descriptors
+     */
     private final List<CosemValueDescriptor> repeatingDescriptors;
 
     /**
@@ -191,7 +199,7 @@ public enum CosemObjectType {
      * @param obisId {@link OBISIdentifier} containing the obisIdentifier for CosemObjectType
      * @param descriptors variable parameter list of {@link CosemValueDescriptor}
      */
-    private CosemObjectType(OBISIdentifier obisId, CosemValueDescriptor... descriptors) {
+    CosemObjectType(OBISIdentifier obisId, CosemValueDescriptor... descriptors) {
         this(obisId, 0, descriptors);
     }
 
@@ -203,7 +211,7 @@ public enum CosemObjectType {
      *            descriptors)
      * @param descriptors variable parameter list of {@link CosemValueDescriptor}
      */
-    private CosemObjectType(OBISIdentifier obisId, int nrOfRepeatingDescriptors, CosemValueDescriptor... descriptors) {
+    CosemObjectType(OBISIdentifier obisId, int nrOfRepeatingDescriptors, CosemValueDescriptor... descriptors) {
         this.obisId = obisId;
         if (nrOfRepeatingDescriptors == 0) {
             this.descriptors = Arrays.asList(descriptors);
@@ -233,7 +241,7 @@ public enum CosemObjectType {
      * @return the CosemValueDescriptor or null if not found.
      */
     public CosemValueDescriptor getDescriptor(int idx) {
-        if (idx >= descriptors.size() && repeatingDescriptors.size() > 0) {
+        if (idx >= descriptors.size() && !repeatingDescriptors.isEmpty()) {
             /* We have a repeating list, find the correct repeating descriptor */
             int repeatingIdx = (idx - descriptors.size()) % repeatingDescriptors.size();
 

@@ -33,19 +33,26 @@ import org.slf4j.LoggerFactory;
  * @since 2.1.0
  */
 public class CosemObject {
-    // logger
     private final Logger logger = LoggerFactory.getLogger(CosemObject.class);
 
-    // Regular expression for finding CosemValues
+    /**
+     * Regular expression for finding CosemValues
+     */
     private static final Pattern cosemValuesPattern = Pattern.compile("(\\(([^\\(\\)]*)\\))");
 
-    // CosemObject yype
+    /**
+     * CosemObject yype
+     */
     private final CosemObjectType type;
 
-    // The actual OBISIdentifier for this CosemObject
+    /**
+     * The actual OBISIdentifier for this CosemObject
+     */
     private final OBISIdentifier obisIdentifier;
 
-    // List of COSEM value in this message
+    /**
+     * List of COSEM value in this message
+     */
     private Map<String, CosemValue<? extends Object>> cosemValues;
 
     /**
@@ -58,7 +65,7 @@ public class CosemObject {
         this.type = msgType;
         this.obisIdentifier = obisIdentifier;
 
-        cosemValues = new HashMap<String, CosemValue<? extends Object>>();
+        cosemValues = new HashMap<>();
     }
 
     /**

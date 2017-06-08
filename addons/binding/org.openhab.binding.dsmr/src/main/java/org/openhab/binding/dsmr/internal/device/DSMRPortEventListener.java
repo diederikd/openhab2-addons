@@ -33,5 +33,5 @@ public interface DSMRPortEventListener {
      * @param cosemObjects List containing the individual data elements of a received P1 telegram
      * @param telegramDetails the details about the received telegram
      */
-    public void P1TelegramReceived(List<CosemObject> cosemObjects, String telegramDetails);
+    public void p1TelegramReceived(List<CosemObject> cosemObjects, String telegramDetails);
 }

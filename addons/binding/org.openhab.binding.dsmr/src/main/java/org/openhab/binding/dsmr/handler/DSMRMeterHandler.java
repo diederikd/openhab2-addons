@@ -37,16 +37,21 @@ import org.slf4j.LoggerFactory;
  * The MeterHandler will create logic DSMR meter ThingTypes
  */
 public class DSMRMeterHandler extends BaseThingHandler implements DSMRMeterListener {
-    // logger
     private final Logger logger = LoggerFactory.getLogger(DSMRMeterHandler.class);
 
-    // The DSMRMeter instance
-    private DSMRMeter meter = null;
+    /**
+     * The DSMRMeter instance
+     */
+    private DSMRMeter meter;
 
-    // Timestamp when last values were received
-    private long lastValuesReceivedTs = 0;
+    /**
+     * Timestamp when last values were received
+     */
+    private long lastValuesReceivedTs;
 
-    // Reference to the meter watchdog
+    /**
+     * Watchdog for checking if the meter is alive
+     */
     private ScheduledFuture<?> meterWatchdog;
 
     /**
@@ -77,52 +82,51 @@ public class DSMRMeterHandler extends BaseThingHandler implements DSMRMeterListe
 
         Configuration config = getThing().getConfiguration();
         DSMRMeterConfiguration meterConfig = null;
-        DSMRMeterDescriptor meterDescriptor = null;
 
-        if (config != null) {
-            meterConfig = config.as(DSMRMeterConfiguration.class);
-        } else {
-            logger.warn("{} does not have a configuration", getThing());
-        }
+        // Since the config instance cannot be null we don't check it
+        meterConfig = config.as(DSMRMeterConfiguration.class);
 
-        if (meterConfig != null) {
-            DSMRMeterType meterType = null;
+        /*
+         * The meterConfig can only be null if the specified class doesn't have a constructor have 0 arguments.
+         * This is a programming bug. Don't handle this situation
+         */
+        DSMRMeterType meterType = null;
 
-            try {
-                meterType = DSMRMeterType.valueOf(getThing().getThingTypeUID().getId().toUpperCase());
-            } catch (Exception exception) {
-                logger.error("Invalid meterType", exception);
-            }
+        try {
+            meterType = DSMRMeterType.valueOf(getThing().getThingTypeUID().getId().toUpperCase());
+        } catch (IllegalArgumentException iaEx) {
+            logger.error("Unknown meterType", iaEx);
 
-            if (meterType != null) {
-                meterDescriptor = new DSMRMeterDescriptor(meterType, meterConfig.channel);
-            }
-        } else {
-            logger.warn("Invalid meter configuration for {}", getThing());
-        }
-        if (meterDescriptor != null) {
-            meter = new DSMRMeter(meterDescriptor, this);
-
-            // Initialize meter watchdog
-            meterWatchdog = scheduler.scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    if (System.currentTimeMillis()
-                            - lastValuesReceivedTs > DSMRMeterConstants.METER_VALUES_RECEIVED_TIMEOUT) {
-                        if (!getThing().getStatus().equals(ThingStatus.OFFLINE)) {
-                            updateStatus(ThingStatus.OFFLINE);
-                        }
-                    }
-                }
-            }, DSMRMeterConstants.METER_VALUES_RECEIVED_TIMEOUT, DSMRMeterConstants.METER_VALUES_RECEIVED_TIMEOUT,
-                    TimeUnit.MILLISECONDS);
-
-            updateStatus(ThingStatus.OFFLINE);
-        } else {
-            logger.warn("{} could not be initialized. Delete this Thing if the problem persists.", getThing());
             updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.CONFIGURATION_ERROR,
                     "This could not be initialized. Delete Thing if the problem persists.");
+
+            return;
+        } catch (NullPointerException npe) {
+            logger.error("Invalid Thing", npe);
+
+            updateStatus(ThingStatus.UNKNOWN, ThingStatusDetail.CONFIGURATION_ERROR,
+                    "This could not be initialized. Delete Thing if the problem persists.");
+
+            return;
         }
+
+        meter = new DSMRMeter(new DSMRMeterDescriptor(meterType, meterConfig.channel), this);
+
+        // Initialize meter watchdog
+        meterWatchdog = scheduler.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                if (System.currentTimeMillis()
+                        - lastValuesReceivedTs > DSMRMeterConstants.METER_VALUES_RECEIVED_TIMEOUT) {
+                    if (getThing().getStatus() != ThingStatus.OFFLINE) {
+                        updateStatus(ThingStatus.OFFLINE);
+                    }
+                }
+            }
+        }, DSMRMeterConstants.METER_VALUES_RECEIVED_TIMEOUT, DSMRMeterConstants.METER_VALUES_RECEIVED_TIMEOUT,
+                TimeUnit.MILLISECONDS);
+
+        updateStatus(ThingStatus.OFFLINE);
     }
 
     /**
@@ -130,6 +134,7 @@ public class DSMRMeterHandler extends BaseThingHandler implements DSMRMeterListe
      */
     @Override
     public void dispose() {
+        // Stop the timeout timer
         if (meterWatchdog != null) {
             meterWatchdog.cancel(false);
             meterWatchdog = null;
@@ -141,11 +146,7 @@ public class DSMRMeterHandler extends BaseThingHandler implements DSMRMeterListe
      */
     @Override
     public void handleRemoval() {
-        // Stop the timeout timer
-        if (meterWatchdog != null) {
-            meterWatchdog.cancel(false);
-            meterWatchdog = null;
-        }
+        dispose();
         updateStatus(ThingStatus.REMOVED);
     }
 
@@ -161,10 +162,10 @@ public class DSMRMeterHandler extends BaseThingHandler implements DSMRMeterListe
         Map<String, ? extends CosemValue<? extends Object>> cosemValues = obj.getCosemValues();
 
         // Update the internal states
-        if (cosemValues.size() > 0) {
+        if (!cosemValues.isEmpty()) {
             lastValuesReceivedTs = System.currentTimeMillis();
 
-            if (!getThing().getStatus().equals(ThingStatus.ONLINE)) {
+            if (getThing().getStatus() != ThingStatus.ONLINE) {
                 updateStatus(ThingStatus.ONLINE);
             }
 

@@ -20,15 +20,36 @@ package org.openhab.binding.dsmr.internal.device.p1telegram;
  * @since 2.1.0
  */
 public class CRC16 {
+    /**
+     * Polynom enumeration
+     */
     public enum Polynom {
-        CRC16_IBM(0xA001), // standard CRC-16 x16+x15+x2+1 (CRC-16-IBM)
-        CRC16_IBM_REVERSE(0xC002), // standard reverse x16+x14+x+1 (CRC-16-IBM)
-        CRC16_CCIT(0x8408), // CCITT/SDLC/HDLC X16+X12+X5+1 (CRC-16-CCITT)
-        // The initial CRC value is usually 0xFFFF and the result is complemented.
-        CRC16_CCIT_REVERSE(0x8810), // CCITT reverse X16+X11+X4+1 (CRC-16-CCITT)
-        CRC16_LRCC(0x8000); // LRCC-16 X16+1
+        /**
+         * standard CRC-16 x16+x15+x2+1 (CRC-16-IBM)
+         */
+        CRC16_IBM(0xA001),
+        /**
+         * standard reverse x16+x14+x+1 (CRC-16-IBM)
+         */
+        CRC16_IBM_REVERSE(0xC002),
+        /**
+         * CCITT/SDLC/HDLC X16+X12+X5+1 (CRC-16-CCITT)
+         */
+        CRC16_CCIT(0x8408),
+        /**
+         * The initial CRC value is usually 0xFFFF and the result is complemented.
+         *
+         * CCITT reverse X16+X11+X4+1 (CRC-16-CCITT)
+         */
+        CRC16_CCIT_REVERSE(0x8810),
+        /**
+         * LRCC-16 X16+1
+         */
+        CRC16_LRCC(0x8000);
 
-        // the polynom to use
+        /**
+         * the polynom to use
+         */
         public final int polynom;
 
         /**
@@ -36,15 +57,19 @@ public class CRC16 {
          *
          * @param polynom
          */
-        private Polynom(int polynom) {
+        Polynom(int polynom) {
             this.polynom = polynom;
         }
     }
 
-    // The cached CRC16 table based on the requested CRC16 variant
+    /**
+     * The cached CRC16 table based on the requested CRC16 variant
+     */
     private short[] crcTable;
 
-    // The current crcValue
+    /**
+     * The current crcValue
+     */
     private int crcValue;
 
     /**

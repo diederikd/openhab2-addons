@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.dsmr.internal.meter;
 
+import java.util.Objects;
+
 /**
  * This class describes the configuration for a meter.
  *
@@ -17,7 +19,9 @@ package org.openhab.binding.dsmr.internal.meter;
  * @since 2.1.0
  */
 public class DSMRMeterConfiguration {
-    // channel
+    /**
+     * Channel (M-Bus channel)
+     */
     public int channel;
 
     @Override
@@ -40,5 +44,10 @@ public class DSMRMeterConfiguration {
         DSMRMeterConfiguration o = (DSMRMeterConfiguration) other;
 
         return channel == o.channel;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(channel);
     }
 }

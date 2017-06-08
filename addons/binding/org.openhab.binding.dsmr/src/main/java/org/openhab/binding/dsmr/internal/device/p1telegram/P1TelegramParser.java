@@ -31,46 +31,83 @@ import org.slf4j.LoggerFactory;
  * @since 2.1.0
  */
 public class P1TelegramParser {
-    // Logger
     private final Logger logger = LoggerFactory.getLogger(P1TelegramParser.class);
 
+    /**
+     * Pattern for checking CRC code
+     */
     private static final String CRC_PATTERN = "[0-9A-Z]{4}";
 
-    // State of the parser
+    /**
+     * State of the parser
+     */
     private static enum State {
-        // Wait for the '/' character
+        /** Wait for the '/' character */
         WAIT_FOR_START,
-        // '/' character seen
+        /** '/' character seen */
         HEADER,
-        // Waiting for the header to end with a CR & LF
+        /** Waiting for the header to end with a CR & LF */
         CRLF,
-        // Handling OBIS Identifier
+        /** Handling OBIS Identifier */
         DATA_OBIS_ID,
-        // Parsing OBIS value
+        /** Parsing OBIS value */
         DATA_OBIS_VALUE,
-        // OBIS value end seen ')'
+        /** OBIS value end seen ')' */
         DATA_OBIS_VALUE_END,
-        // Parsing CRC value following '!'
+        /** Parsing CRC value following '!' */
         CRC_VALUE
     };
 
     /* internal state variables */
+    /**
+     * Buffer for storing the string containing OBIS identifer
+     */
     private StringBuffer obisId = new StringBuffer();
+
+    /**
+     * Buffer for storing the string containing the COSEM values
+     */
     private StringBuffer cosemObjectValuesString = new StringBuffer();
+
+    /**
+     * Buffer for storing the string containing the CRC vlue
+     */
     private StringBuffer crcValue = new StringBuffer();
+
+    /**
+     * CRC16 helper class
+     */
     private CRC16 crc;
+
+    /**
+     * parser state
+     */
     private State state = State.WAIT_FOR_START;
+
+    /**
+     * Should parser operate in lenientMode
+     */
     private boolean lenientMode = false;
+
+    /**
+     * State of the received P1 telegram
+     */
     private TelegramState telegramState;
 
-    // Helper classes
+    /**
+     * Factory for creating COSEM objects
+     */
     private CosemObjectFactory factory;
 
-    // Received Cosem Objects in the received P1Telegram
-    private List<CosemObject> cosemObjects = new LinkedList<CosemObject>();
+    /**
+     * Received Cosem Objects in the current received P1Telegram
+     */
+    private List<CosemObject> cosemObjects = new LinkedList<>();
 
-    // Listener
-    private P1TelegramListener telegramListener = null;
+    /**
+     * Listener for received P1 telegrams
+     */
+    private P1TelegramListener telegramListener;
 
     /**
      * Creates a new P1TelegramParser

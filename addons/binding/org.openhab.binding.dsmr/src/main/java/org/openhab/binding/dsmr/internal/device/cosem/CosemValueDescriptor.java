@@ -15,15 +15,24 @@ package org.openhab.binding.dsmr.internal.device.cosem;
  * @since 2.1.0
  */
 public class CosemValueDescriptor {
+    /**
+     * Constant for a regular channel (that is a COSEM value has only one particular element)
+     */
     public static final String DEFAULT_CHANNEL = "default";
 
-    /* Class describing the type */
+    /**
+     * Class describing the COSEM value class
+     */
     private final Class<? extends CosemValue<? extends Object>> cosemValueClass;
 
-    /* String describing the unit */
+    /**
+     * String describing the unit of the COSEM value
+     */
     private final String unit;
 
-    /* String describing the channel on which this value descriptor is available */
+    /**
+     * String describing the OpenHAB channel on which this value descriptor is available
+     */
     private final String ohCannelId;
 
     /**

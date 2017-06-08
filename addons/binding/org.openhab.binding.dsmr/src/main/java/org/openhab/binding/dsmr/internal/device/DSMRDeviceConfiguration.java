@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.dsmr.internal.device;
 
+import java.util.Objects;
+
 /**
  * Class described the DSMRDeviceConfiguration.
  *
@@ -17,13 +19,12 @@ package org.openhab.binding.dsmr.internal.device;
  * @since 2.1.0
  */
 public class DSMRDeviceConfiguration {
-    // Portname
+    /**
+     * Configured Portname
+     */
     public String serialPort;
 
-    // Serial port settings (having these will disable autodetect mode)
-    public String serialPortSettings;
-
-    /*
+    /**
      * The DSMR Device can work in a lenient mode.
      * This means the binding is less strict during communication errors and will ignore the CRC-check
      * Data that is available will be communicated to the OpenHAB2 system and recoverable communication errors
@@ -32,10 +33,36 @@ public class DSMRDeviceConfiguration {
      */
     public Boolean lenientMode;
 
+    /**
+     * Use serial port autodetection
+     */
+    public Boolean autoDiscovery;
+
+    /**
+     * Configured baudrate
+     */
+    public Integer baudrate;
+
+    /**
+     * Configured number of data bits
+     */
+    public Integer databits;
+
+    /**
+     * Configured parity
+     */
+    public String parity;
+
+    /**
+     * Configured number of stopbits
+     */
+    public String stopbits;
+
     @Override
     public String toString() {
-        return "DSMRDeviceConfiguration(portName:" + serialPort + ", fixedPortSettings:" + serialPortSettings
-                + ", lenientMode:" + lenientMode;
+        return "DSMRDeviceConfiguration(portName:" + serialPort + ", lenientMode:" + lenientMode + ", auto discovery:"
+                + autoDiscovery + ", baudrate:" + baudrate + ", databits:" + databits + ", parity:" + parity
+                + ", stopbits:" + stopbits;
     }
 
     /**
@@ -52,7 +79,13 @@ public class DSMRDeviceConfiguration {
         }
         DSMRDeviceConfiguration o = (DSMRDeviceConfiguration) other;
 
-        return serialPort.equals(o.serialPort) && serialPortSettings.equals(o.serialPortSettings)
-                && lenientMode == o.lenientMode;
+        return serialPort.equals(o.serialPort) && lenientMode == o.lenientMode && autoDiscovery == o.autoDiscovery
+                && baudrate.equals(o.baudrate) && databits.equals(o.databits) && parity.equals(o.parity)
+                && stopbits.equals(o.stopbits);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(serialPort, lenientMode, autoDiscovery, baudrate, databits, parity, stopbits);
     }
 }

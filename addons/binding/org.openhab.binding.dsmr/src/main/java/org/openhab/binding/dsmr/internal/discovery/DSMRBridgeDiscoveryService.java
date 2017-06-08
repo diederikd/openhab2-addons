@@ -30,7 +30,6 @@ import gnu.io.CommPortIdentifier;
  * @since 2.1.0
  */
 public class DSMRBridgeDiscoveryService extends AbstractDiscoveryService implements DSMRBridgeDiscoveryListener {
-    // Logger
     private final Logger logger = LoggerFactory.getLogger(DSMRBridgeDiscoveryService.class);
 
     /**
@@ -38,7 +37,7 @@ public class DSMRBridgeDiscoveryService extends AbstractDiscoveryService impleme
      */
     public DSMRBridgeDiscoveryService() {
         super(Collections.singleton(DSMRBindingConstants.THING_TYPE_DSMR_BRIDGE),
-                DSMRBindingConstants.DSMR_DISCOVERY_TIMEOUT, false);
+                DSMRBindingConstants.DSMR_DISCOVERY_TIMEOUT_SECONDS, false);
     }
 
     /**
@@ -61,7 +60,7 @@ public class DSMRBridgeDiscoveryService extends AbstractDiscoveryService impleme
             if (portIdentifier.getPortType() == CommPortIdentifier.PORT_SERIAL && !portIdentifier.isCurrentlyOwned()) {
                 logger.debug("Start discovery for serial port: {}", portIdentifier.getName());
                 DSMRBridgeDiscoveryHelper discoveryHelper = new DSMRBridgeDiscoveryHelper(portIdentifier.getName(),
-                        this);
+                        this, scheduler);
                 discoveryHelper.startDiscovery();
             }
         }
@@ -82,7 +81,7 @@ public class DSMRBridgeDiscoveryService extends AbstractDiscoveryService impleme
                 Integer.toHexString(serialPort.hashCode()));
 
         // Construct the configuration for this meter
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put("serialPort", serialPort);
 
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)

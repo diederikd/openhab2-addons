@@ -17,7 +17,9 @@ import java.util.concurrent.TimeUnit;
  * @since 2.1.0
  */
 public class DSMRDeviceConstants {
-    // State definitions
+    /**
+     * State definitions
+     */
     public enum DeviceState {
         INITIALIZING,
         STARTING,
@@ -28,7 +30,9 @@ public class DSMRDeviceConstants {
         CONFIGURATION_PROBLEM;
     }
 
-    // DSMR Port events
+    /**
+     * DSMR Port events
+     */
     public enum DSMRPortEvent {
         CLOSED("Serial port closed"),
         OPENED("Serial port opened"),
@@ -42,20 +46,33 @@ public class DSMRDeviceConstants {
         WRONG_BAUDRATE("Wrong baudrate"),
         ERROR("General error");
 
-        // Public accessible details about the event
-        public final String eventDetails;
+        /**
+         * Public accessible details about the event
+         */
+        private final String eventDetails;
 
         /**
          * Constructor for a DSMRPortEvent
          *
          * @param eventDetails String containing the details about the event
          */
-        private DSMRPortEvent(String eventDetails) {
+        DSMRPortEvent(String eventDetails) {
             this.eventDetails = eventDetails;
+        }
+
+        /**
+         * Returns the eventDetails
+         *
+         * @return eventDetails
+         */
+        public String getEventDetails() {
+            return eventDetails;
         }
     }
 
-    // DSMR Device events
+    /**
+     * DSMR Device events
+     */
     public enum DSMRDeviceEvent {
         INITIALIZE("Initializing DSMR device"),
         DSMR_PORT_OPENED("DMSR port opened successfull"),
@@ -67,23 +84,42 @@ public class DSMRDeviceConstants {
         READ_ERROR("DSMR port read error"),
         SHUTDOWN("DSMR device shutdown");
 
-        // Public accessible details about the event
-        public String eventDetails;
+        /**
+         * Public accessible details about the event
+         */
+        private final String eventDetails;
 
         /**
          * Constructor for a DSMRDeviceEvent
          *
          * @param eventDetails String containing the details about the event
          */
-        private DSMRDeviceEvent(String eventDetails) {
+        DSMRDeviceEvent(String eventDetails) {
             this.eventDetails = eventDetails;
+        }
+
+        /**
+         * Returns the eventDetails
+         *
+         * @return eventDetails
+         */
+        public String getEventDetails() {
+            return eventDetails;
         }
     }
 
-    // Serial port read time out (15 seconds)
-    public static final int SERIAL_PORT_READ_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(15);
-    // Timeout for detecting the correct serial port settings
-    public static final int SERIAL_PORT_AUTO_DETECT_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(30);
-    // // Timeout for recovery from offline mode
-    public static final int RECOVERY_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(30);
+    /**
+     * Serial port read time out (15 seconds)
+     */
+    public static final long SERIAL_PORT_READ_TIMEOUT = TimeUnit.SECONDS.toMillis(15);
+
+    /**
+     * Timeout for detecting the correct serial port settings
+     */
+    public static final long SERIAL_PORT_AUTO_DETECT_TIMEOUT = TimeUnit.SECONDS.toMillis(30);
+
+    /**
+     * Timeout for recovery from offline mode
+     */
+    public static final long RECOVERY_TIMEOUT = TimeUnit.SECONDS.toMillis(30);
 }

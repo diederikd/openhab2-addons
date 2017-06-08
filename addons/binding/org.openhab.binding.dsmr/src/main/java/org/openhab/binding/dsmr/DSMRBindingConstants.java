@@ -18,18 +18,25 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
  * @since 2.1.0
  */
 public class DSMRBindingConstants {
-    // Binding constant
+    /**
+     * Binding constant
+     */
     public static final String BINDING_ID = "dsmr";
 
-    // Binding global thread pool names
+    /**
+     * Constant for the DSMR Thread pool
+     */
     public static final String DSMR_THREAD_POOL_NAME = "DSMR Thread Pool";
-    public static final String DSMR_SCHEDULED_THREAD_POOL_NAME = "DSMR Scheduled Thread Pool";
 
-    // Bridge device thing
+    /**
+     * Bridge device thing type UID
+     */
     public final static ThingTypeUID THING_TYPE_DSMR_BRIDGE = new ThingTypeUID(BINDING_ID, "dsmrBridge");
 
     // The other Thing Types are defined in DSMRMeterTypes
 
-    // Discovery timeout
-    public final static int DSMR_DISCOVERY_TIMEOUT = 60;
+    /**
+     * Discovery timeout (in seconds)
+     */
+    public final static int DSMR_DISCOVERY_TIMEOUT_SECONDS = 60;
 }

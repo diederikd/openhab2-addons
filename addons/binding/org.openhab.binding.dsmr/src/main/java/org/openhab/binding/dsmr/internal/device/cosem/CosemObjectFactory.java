@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +24,22 @@ import org.slf4j.LoggerFactory;
  * @since 2.1.0
  */
 public class CosemObjectFactory {
-    /* logger */
     private final Logger logger = LoggerFactory.getLogger(CosemObjectFactory.class);
 
     /* internal lookup cache */
-    private final HashMap<OBISIdentifier, CosemObjectType> obisLookupTableFixed;
-    private final HashMap<OBISIdentifier, CosemObjectType> obisLookupTableDynamic;
+    /**
+     * Lookup table for fixed OBIS messages (most main electricity meter)
+     */
+    private final Map<OBISIdentifier, CosemObjectType> obisLookupTableFixed;
+
+    /**
+     * Lookup table for OBIS messages that are dependent on the phsyical (M-Bus) configuration
+     */
+    private final Map<OBISIdentifier, CosemObjectType> obisLookupTableDynamic;
+
+    /**
+     * List of wildcard OBIS identifiers
+     */
     private final List<CosemObjectType> obisWildcardCosemTypeList;
 
     /**
@@ -44,15 +55,15 @@ public class CosemObjectFactory {
          * dynamically with unique wildcard OBISIdentifiers when values are received and matches a particular real
          * device (if the device is changed, this lookupTable must be cleared by removing the corresponding DSMRDevice
          * Thing from the configuration.
-         * - obisWildCardCosemTypeList. This is the list of all wil card Cosem Object types. Multiple Cosem Object Types
-         * can have the same wild card OBISIdentifer.
+         * - obisWildCardCosemTypeList. This is the list of all wild card Cosem Object types. Multiple Cosem Object
+         * Types can have the same wild card OBISIdentifer.
          *
          * To facilitate autodiscovery the list has all supported CosemObjectTypes. To improve performance once the
          * correct OBISIdentifier is discovered for a certain OBISMsgType this is added to the obisLookupTableDynamic.
          */
-        obisLookupTableFixed = new HashMap<OBISIdentifier, CosemObjectType>();
-        obisLookupTableDynamic = new HashMap<OBISIdentifier, CosemObjectType>();
-        obisWildcardCosemTypeList = new LinkedList<CosemObjectType>();
+        obisLookupTableFixed = new HashMap<>();
+        obisLookupTableDynamic = new HashMap<>();
+        obisWildcardCosemTypeList = new LinkedList<>();
 
         for (CosemObjectType msgType : CosemObjectType.values()) {
             if (!msgType.obisId.reducedOBISIdentifierIsWildCard()) {

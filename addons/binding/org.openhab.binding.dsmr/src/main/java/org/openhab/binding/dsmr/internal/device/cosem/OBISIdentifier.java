@@ -19,10 +19,14 @@ import java.util.regex.Pattern;
  * @since 2.1.0
  */
 public class OBISIdentifier {
-    /* String representing a.b.c.d.e.f OBIS ID */
+    /**
+     * String representing a.b.c.d.e.f OBIS ID
+     */
     private static final String OBISID_REGEX = "((\\d+)\\-)?((\\d+):)?((\\d+)\\.)(\\d+)(\\.(\\d+))?(\\*(\\d+))?";
 
-    /* OBIS ID pattern */
+    /**
+     * OBIS ID pattern
+     */
     private static final Pattern obisIdPattern = Pattern.compile(OBISID_REGEX);
 
     /* the six individual group values of the OBIS ID */

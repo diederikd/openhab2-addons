@@ -30,11 +30,12 @@ import org.slf4j.LoggerFactory;
  * @since 2.1.0
  */
 public class DSMRMeterDiscoveryService extends AbstractDiscoveryService implements DSMRMeterDiscoveryListener {
-    // Logger
     private final Logger logger = LoggerFactory.getLogger(DSMRMeterDiscoveryService.class);
 
-    // The Bridge ThingUID
-    private ThingUID dsmrBridgeUID = null;
+    /**
+     * The Bridge ThingUID
+     */
+    private final ThingUID dsmrBridgeUID;
 
     /**
      * Constructs a new DSMRMeterDiscoveryService with the specified DSMR Bridge ThingUID
@@ -42,7 +43,7 @@ public class DSMRMeterDiscoveryService extends AbstractDiscoveryService implemen
      * @param dsmrBridgeUID ThingUID for the DSMR Bridges
      */
     public DSMRMeterDiscoveryService(ThingUID dsmrBridgeUID) {
-        super(DSMRMeterType.METER_THING_TYPES, DSMRBindingConstants.DSMR_DISCOVERY_TIMEOUT, false);
+        super(DSMRMeterType.METER_THING_TYPES, DSMRBindingConstants.DSMR_DISCOVERY_TIMEOUT_SECONDS, false);
         this.dsmrBridgeUID = dsmrBridgeUID;
     }
 
@@ -79,7 +80,7 @@ public class DSMRMeterDiscoveryService extends AbstractDiscoveryService implemen
         ThingUID thingUID = new ThingUID(thingId);
 
         // Construct the configuration for this meter
-        Map<String, Object> properties = new HashMap<String, Object>();
+        Map<String, Object> properties = new HashMap<>();
         properties.put("meterType", meterType.name());
         properties.put("channel", meterDescriptor.getChannel());
 

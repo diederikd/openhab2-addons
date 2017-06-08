@@ -23,10 +23,14 @@ import org.eclipse.smarthome.core.types.State;
  * @param <S> the native type this CosemValue represent
  */
 public abstract class CosemValue<S extends Object> {
-    /** native value */
+    /**
+     * native value
+     */
     protected S value;
 
-    /* unit of this cosemValue */
+    /**
+     * unit of this cosemValue
+     */
     private final String unit;
 
     /**

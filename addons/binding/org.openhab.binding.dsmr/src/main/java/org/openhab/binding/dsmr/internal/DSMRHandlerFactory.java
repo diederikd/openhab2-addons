@@ -33,10 +33,11 @@ import org.slf4j.LoggerFactory;
  * @since 2.1.0
  */
 public class DSMRHandlerFactory extends BaseThingHandlerFactory {
-    // Logger
     private final Logger logger = LoggerFactory.getLogger(DSMRHandlerFactory.class);
 
-    // The registration handler
+    /**
+     * The registration handler used for notifying new detected meters
+     */
     private ServiceRegistration<?> serviceReg;
 
     /**
@@ -55,11 +56,11 @@ public class DSMRHandlerFactory extends BaseThingHandlerFactory {
             return true;
         } else {
             boolean thingTypeUIDIsMeter = DSMRMeterType.METER_THING_TYPES.contains(thingTypeUID);
-            if (logger.isDebugEnabled()) {
+            if (logger.isTraceEnabled()) {
                 if (thingTypeUIDIsMeter) {
-                    logger.debug("{} is a supported DSMR Meter thing", thingTypeUID);
+                    logger.trace("{} is a supported DSMR Meter thing", thingTypeUID);
                 } else {
-                    logger.debug("{} is not a DSMR Meter thing or not a supported DSMR Meter thing", thingTypeUID);
+                    logger.trace("{} is not a DSMR Meter thing or not a supported DSMR Meter thing", thingTypeUID);
                 }
             }
             return thingTypeUIDIsMeter;

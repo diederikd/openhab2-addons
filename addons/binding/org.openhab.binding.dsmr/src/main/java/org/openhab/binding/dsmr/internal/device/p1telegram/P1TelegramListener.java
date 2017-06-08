@@ -35,7 +35,9 @@ public interface P1TelegramListener {
         CRC_ERROR("CRC checksum failed for received P1 telegram"),
         DATA_CORRUPTION("Received P1 telegram is corrupted");
 
-        // public accessible state details
+        /**
+         * public accessible state details
+         */
         public final String stateDetails;
 
         /**
@@ -43,7 +45,7 @@ public interface P1TelegramListener {
          *
          * @param stateDetails String containing the details of this TelegramState
          */
-        private TelegramState(String stateDetails) {
+        TelegramState(String stateDetails) {
             this.stateDetails = stateDetails;
         }
     }
