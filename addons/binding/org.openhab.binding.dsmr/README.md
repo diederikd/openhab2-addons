@@ -274,7 +274,7 @@ ItemType <name> "<description>" (<Group>) {channel="<Channel identifier>"}
 ```
 **Examples**
 ```
-Number MeterDeliveryTariff0 "Total electricity delivered to the resident during low tariff period [%.3f kWh]" {channel="dsmr:electricity_v5_0:mysmartmeter:electricityV5:emeter_delivery_tariff1}
+Number MeterDeliveryTariff0 "Total electricity delivered to the resident during low tariff period [%.3f kWh]" {channel="dsmr:electricity_v5_0:mysmartmeter:electricityV5:emeter_delivery_tariff1"}
 ```
 
 ## Full configuration example
